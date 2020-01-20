@@ -34,11 +34,34 @@ let quotes = [
     quote:
       "Success seems to be largely a matter of hanging on after others have let go.",
     source: "William Feather"
+  },
+  {
+    quote: "Comedy is tragedy, if you only look deep enough.",
+    source: "Thomas Hardy",
+    citation: "Correspondence sent to John Addington Symonds",
+    year: 1889
+  },
+  {
+    quote: "The lyrics moved down my arm and came out on the page.",
+    source: "Joan Baez",
+    citation: "The Courage of Conviction",
+    year: 1985
   }
 ];
 
-// array to keep track of which quote has already been viewed
-let usedQuotes = [0, 0, 0, 0, 0];
+// array to keep track of which quote has already been viewed by index
+let usedQuotes = [];
+setZerosForTrackingArray();
+
+function setZerosForTrackingArray(index = -1) {
+  for (let i = 0; i < quotes.length; i++) {
+    usedQuotes[i] = 0;
+    if (index != -1) {
+      // to mark off the last used quote so as not to be
+      usedQuotes[index] = 1; //   repeated first in next iteration
+    }
+  }
+}
 
 /***
  * `getRandomQuote` function
@@ -49,9 +72,11 @@ function getRandomQuote() {
     randomNumber = Math.floor(Math.random() * quotes.length);
     if (usedQuotes[randomNumber] === 0) {
       usedQuotes[randomNumber] = 1;
-      if (usedQuotes.reduce((x, y) => x + y) === 5) {
-        usedQuotes = [0, 0, 0, 0, 0];
+      if (usedQuotes.reduce((x, y) => x + y) === quotes.length) {
+        setZerosForTrackingArray(randomNumber);
       }
+      console.log(usedQuotes);
+
       return quotes[randomNumber];
     }
   }
@@ -63,10 +88,19 @@ function getRandomQuote() {
 function printQuote() {
   let randomQuote = getRandomQuote();
   let html =
-    '<p class="quotes">' +
+    '<p class="quote">' +
     randomQuote.quote +
     '</p><p class="source">' +
     randomQuote.source;
+  if (typeof randomQuote.citation !== "undefined") {
+    html += '<span class="citation">' + randomQuote.citation + "</span>";
+  }
+  if (typeof randomQuote.year !== "undefined") {
+    html += '<span class="year">' + randomQuote.year + "</span>";
+  }
+  html += "</p>";
+
+  document.getElementById("quote-box").innerHTML = html;
 }
 
 /***
