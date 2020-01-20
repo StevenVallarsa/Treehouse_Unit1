@@ -36,23 +36,44 @@ let quotes = [
     source: "William Feather"
   }
 ];
-console.log(quotes);
+
+// array to keep track of which quote has already been viewed
+let usedQuotes = [0, 0, 0, 0, 0];
+
 /***
  * `getRandomQuote` function
  ***/
 function getRandomQuote() {
-  return quotes[Math.floor(Math.random() * quotes.length)];
+  let randomNumber;
+  while (true) {
+    randomNumber = Math.floor(Math.random() * quotes.length);
+    if (usedQuotes[randomNumber] === 0) {
+      usedQuotes[randomNumber] = 1;
+      if (usedQuotes.reduce((x, y) => x + y) === 5) {
+        usedQuotes = [0, 0, 0, 0, 0];
+      }
+      return quotes[randomNumber];
+    }
+  }
 }
+
 /***
  * `printQuote` function
  ***/
+function printQuote() {
+  let randomQuote = getRandomQuote();
+  let html =
+    '<p class="quotes">' +
+    randomQuote.quote +
+    '</p><p class="source">' +
+    randomQuote.source;
+}
 
 /***
  * click event listener for the print quote button
  * DO NOT CHANGE THE CODE BELOW!!
  ***/
 
-// document
-//   .getElementById("load-quote")
-//   .addEventListener("click", printQuote, false);
-console.log(getRandomQuote());
+document
+  .getElementById("load-quote")
+  .addEventListener("click", printQuote, false);
