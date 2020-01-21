@@ -28,8 +28,7 @@ let quotes = [
   {
     quote:
       "If you really look closely, most overnight successes took a long time.",
-    source: "Steve Jobs",
-    nationality: "American"
+    source: "Steve Jobs"
   },
   {
     quote:
@@ -39,7 +38,6 @@ let quotes = [
   {
     quote: "Comedy is tragedy, if you only look deep enough.",
     source: "Thomas Hardy",
-    nationality: "English",
     citation: "Correspondence sent to John Addington Symonds",
     year: 1889
   },
@@ -51,20 +49,16 @@ let quotes = [
   }
 ];
 
-/***
- * array to keep track of which quotes have been used so they're not repeated
- ***/
-
+// array to keep track of which quote has already been viewed by index
 let usedQuotes = [];
 setZerosForTrackingArray();
 
-function setZerosForTrackingArray(index) {
+function setZerosForTrackingArray(index = -1) {
   for (let i = 0; i < quotes.length; i++) {
     usedQuotes[i] = 0;
-    // mark off the last used quote so as not to be randomly repeated first in next iteration
-    // during first runthrough "index" will be "undefined" and this step will be skipped
-    if (index !== "undefined") {
-      usedQuotes[index] = 1;
+    if (index != -1) {
+      // to mark off the last used quote so as not to be
+      usedQuotes[index] = 1; //   repeated first in next iteration
     }
   }
 }
@@ -75,17 +69,14 @@ function setZerosForTrackingArray(index) {
 function getRandomQuote() {
   let randomNumber;
   while (true) {
-    // loop through quotes array until unused quote is found
     randomNumber = Math.floor(Math.random() * quotes.length);
-
     if (usedQuotes[randomNumber] === 0) {
       usedQuotes[randomNumber] = 1;
       if (usedQuotes.reduce((x, y) => x + y) === quotes.length) {
-        // resets indexes for fresh start at quotes
-        // bringing in the last quote so it isn't randomly selected
-        // two times in a row
         setZerosForTrackingArray(randomNumber);
       }
+      console.log(usedQuotes);
+
       return quotes[randomNumber];
     }
   }
@@ -95,7 +86,6 @@ function getRandomQuote() {
  * `printQuote` function
  ***/
 function printQuote() {
-  changeBackgroundColor();
   let randomQuote = getRandomQuote();
   let html =
     '<p class="quote">' +
@@ -108,29 +98,10 @@ function printQuote() {
   if (typeof randomQuote.year !== "undefined") {
     html += '<span class="year">' + randomQuote.year + "</span>";
   }
-  if (typeof randomQuote.nationality !== "undefined") {
-    html += "<span><i> — " + randomQuote.nationality + "</i></span>";
-  }
   html += "</p>";
 
   document.getElementById("quote-box").innerHTML = html;
 }
-
-/***
- * creates random colors for background with each quote
- ***/
-function changeBackgroundColor() {
-  function colorNum() {
-    return Math.ceil(Math.random() * 255);
-  }
-  let color = "rgb(" + colorNum() + "," + colorNum() + "," + colorNum() + ")";
-  document.body.style.background = color;
-}
-
-// updates quote every 5 seconds
-setInterval(function() {
-  printQuote();
-}, 5000);
 
 /***
  * click event listener for the print quote button
